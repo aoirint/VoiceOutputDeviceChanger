@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode Condition="'$(CI)' == 'true'">true</RestoreLockedMode>
+    <AssemblyName>VoiceOutputDeviceChanger</AssemblyName>
+    <RootNamespace>VoiceOutputDeviceChanger</RootNamespace>
+    <Product>Voice Output Device Changer</Product>
+    <Description>Routes remote Lethal Company player voices to a selected Windows audio output device.</Description>
+    <!-- APP_VERSION_MARKER -->
+    <Version>0.0.0</Version>
+    <Authors>aoirint</Authors>
+    <Company>aoirint</Company>
+    <RepositoryUrl>https://github.com/aoirint/VoiceOutputDeviceChanger</RepositoryUrl>
+    <PackageId>VoiceOutputDeviceChanger</PackageId>
+    <BepInExPluginGuid>com.aoirint.voiceoutputdevicechanger</BepInExPluginGuid>
+    <BepInExPluginName>Voice Output Device Changer</BepInExPluginName>
+    <DebugType>portable</DebugType>
+    <!-- BepInEx.PluginInfoProps intentionally generates PLUGIN_* constants. -->
+    <NoWarn>$(NoWarn);CA1707</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="[1.0.8]" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="[5.4.21]" IncludeAssets="compile;build" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="[2.1.0]" PrivateAssets="all" />
+    <PackageReference Include="UnityEngine.Modules" Version="[2022.3.62]" IncludeAssets="compile" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

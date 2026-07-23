@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"
+     role="img" aria-labelledby="title description">
+  <title id="title">Voice Output Device Changer package icon</title>
+  <desc id="description">A speech waveform routed to a pair of headphones.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#152737"/>
+      <stop offset="1" stop-color="#071017"/>
+    </linearGradient>
+    <linearGradient id="signal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#73e5c1"/>
+      <stop offset="1" stop-color="#f1d66b"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="36" fill="url(#background)"/>
+  <path d="M48 121h20l10-31 17 69 16-92 17 73 13-39 10 20h25"
+        fill="none" stroke="url(#signal)" stroke-width="12"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M151 121h25c20 0 36 16 36 36v15"
+        fill="none" stroke="#f1d66b" stroke-width="12" stroke-linecap="round"/>
+  <path d="M112 177v-11c0-32 26-58 58-58s58 26 58 58v11"
+        fill="none" stroke="#e9f1f5" stroke-width="12" stroke-linecap="round"/>
+  <rect x="104" y="166" width="25" height="51" rx="12" fill="#73e5c1"/>
+  <rect x="211" y="166" width="25" height="51" rx="12" fill="#f1d66b"/>
+</svg>

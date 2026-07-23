@@ -1,0 +1,40 @@
+{
+  "version": "v0.25.0",
+  "published_at": "2026-07-12T13:07:22Z",
+  "cooldown_days": 7,
+  "eligible_on": "2026-07-19T13:07:22Z",
+  "release_url": "https://github.com/microsoft/apm/releases/tag/v0.25.0",
+  "download_url_template": "https://github.com/microsoft/apm/releases/download/{version}/{asset}",
+  "assets": [
+    {
+      "platform": "macos-arm64",
+      "archive": "apm-darwin-arm64.tar.gz",
+      "extracted_directory": "apm-darwin-arm64",
+      "sha256": "8b46963bf881d1369c1ee30f6099fba54d13379a8860ec190cdcaf50cf4586a9"
+    },
+    {
+      "platform": "macos-x86_64",
+      "archive": "apm-darwin-x86_64.tar.gz",
+      "extracted_directory": "apm-darwin-x86_64",
+      "sha256": "8b1c43543113550e49939c7970429e19881d6347c90c44185eb55ea73d0eca73"
+    },
+    {
+      "platform": "linux-arm64",
+      "archive": "apm-linux-arm64.tar.gz",
+      "extracted_directory": "apm-linux-arm64",
+      "sha256": "962d0d463544bdba42f2c99e8daa12eef2abd15d52e18bfbbad07fb13e573305"
+    },
+    {
+      "platform": "linux-x86_64",
+      "archive": "apm-linux-x86_64.tar.gz",
+      "extracted_directory": "apm-linux-x86_64",
+      "sha256": "7a4281ef915e9609f8841eced19285bf2dcf702862302171f7e893c30e1b3244"
+    },
+    {
+      "platform": "windows-x86_64",
+      "archive": "apm-windows-x86_64.zip",
+      "extracted_directory": "apm-windows-x86_64",
+      "sha256": "1d9b3b44ffe031c331f4dfe33694bbb80d10d16165ca053110b96dbeb7365943"
+    }
+  ]
+}

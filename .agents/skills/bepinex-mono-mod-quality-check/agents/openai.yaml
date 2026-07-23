@@ -1,0 +1,4 @@
+interface:
+  display_name: "BepInEx Mono Mod Quality Check"
+  short_description: "Review BepInEx mod, family, CI, and release quality."
+  default_prompt: "Use $bepinex-mono-mod-quality-check to review this BepInEx Mono mod for repository-family alignment, C# structure, module boundaries, GitHub CI, package readiness, release automation, and verification quality."

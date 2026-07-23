@@ -1,0 +1,33 @@
+name: voice-output-device-changer
+version: 0.0.0
+description: APM-managed Agent Skills for VoiceOutputDeviceChanger
+author: aoirint
+license: MIT
+# Which agent platforms to deploy to.
+# Resolution order: --target flag > this field > auto-detect from filesystem.
+# Accepted values: vscode, agents, copilot, claude, cursor, opencode, codex,
+# gemini, antigravity, windsurf, kiro, agent-skills, all
+targets:
+- codex
+dependencies:
+  apm:
+  - aoirint/skills/.apm/skills/apm-usage#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/bepinex-mono-mod-quality-check#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/changelog-workflow#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/code-quality-check#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/commit-message-quality-check#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/git-worktree-workflow#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/github-actions-quality-check#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/gitignore-workflow#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/issue-quality-check#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/lethal-company-analyze#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/prose-quality-check#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/pull-request-quality-check#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/release-note-workflow#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/rollout-workflow#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/security-check#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/software-documentation-maintenance#65a95372dae6568d790bf95d20d56ab827b94ab0
+  - aoirint/skills/.apm/skills/unity-game-analyze#65a95372dae6568d790bf95d20d56ab827b94ab0
+  mcp: []
+includes: auto
+scripts: {}

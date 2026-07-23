@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="VoiceOutputDeviceChanger/VoiceOutputDeviceChanger.csproj" />
+  <Project Path="VoiceOutputDeviceChanger.Tests/VoiceOutputDeviceChanger.Tests.csproj" />
+</Solution>

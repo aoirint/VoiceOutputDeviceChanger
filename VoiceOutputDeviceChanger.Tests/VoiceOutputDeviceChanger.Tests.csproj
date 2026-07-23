@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode Condition="'$(CI)' == 'true'">true</RestoreLockedMode>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!-- Linked production code targets netstandard2.1; test literals favor local fixture clarity. -->
+    <NoWarn>$(NoWarn);CA1510;CA1513;CA1861</NoWarn>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\VoiceOutputDeviceChanger\Core\AtomicRegistration.cs" Link="Core\AtomicRegistration.cs" />
+    <Compile Include="..\VoiceOutputDeviceChanger\Core\AudioRingBuffer.cs" Link="Core\AudioRingBuffer.cs" />
+    <Compile Include="..\VoiceOutputDeviceChanger\Core\VoiceCaptureStream.cs" Link="Core\VoiceCaptureStream.cs" />
+    <Compile Include="..\VoiceOutputDeviceChanger\Core\VoiceAudioMixer.cs" Link="Core\VoiceAudioMixer.cs" />
+    <Compile Include="..\VoiceOutputDeviceChanger\Interop\WindowsAudio\CoreAudioInterop.cs" Link="Interop\CoreAudioInterop.cs" />
+    <Compile Include="..\VoiceOutputDeviceChanger\Interop\WindowsAudio\AudioEndpointService.cs" Link="Interop\AudioEndpointService.cs" />
+    <Compile Include="..\VoiceOutputDeviceChanger\Interop\WindowsAudio\WasapiRenderer.cs" Link="Interop\WasapiRenderer.cs" />
+    <Compile Include="PackageContract.cs" />
+    <Compile Include="Program.cs" />
+    <PackageReference Include="Mono.Cecil" Version="[0.11.4]" />
+  </ItemGroup>
+</Project>

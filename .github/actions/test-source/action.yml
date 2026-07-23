@@ -1,0 +1,25 @@
+name: Test source and package contract
+description: Build the plugin and run deterministic audio and archive-contract tests.
+
+runs:
+  using: composite
+  steps:
+    - name: Set up locked .NET environment
+      uses: ./.github/actions/setup-dotnet
+
+    - name: Build release configuration
+      shell: bash
+      run: dotnet build VoiceOutputDeviceChanger.slnx --no-restore --configuration Release
+
+    - name: Run deterministic audio and package-contract tests
+      shell: bash
+      run: |
+        set -euo pipefail
+        project_version=$(dotnet msbuild \
+          VoiceOutputDeviceChanger/VoiceOutputDeviceChanger.csproj \
+          -getProperty:Version -nologo | tr -d '\r' | xargs)
+        dotnet run \
+          --project VoiceOutputDeviceChanger.Tests \
+          --no-build --configuration Release -- \
+          VoiceOutputDeviceChanger/bin/Release/netstandard2.1/VoiceOutputDeviceChanger.dll \
+          "${project_version}" "${project_version}" --skip-live-audio
