@@ -13,10 +13,10 @@ committed publication gate and selecting a nonzero three-part version selects
 the stable path after matching developer and package changelog entries are
 present.
 
-Release classification, package staging, deterministic ZIP creation, and
-checksum generation belong to `.github/workflows/main.yml`. Archive-contract
-and assembly-identity validation belongs to the test project. There is no
-standalone package executable or separate runtime-approval data format.
+Release classification, package staging, ZIP creation, and checksum generation
+belong to `.github/workflows/main.yml`. Archive-contract and assembly-identity
+validation belongs to the test project. There is no standalone package
+executable or separate runtime-approval data format.
 
 ## Release inputs
 
@@ -68,14 +68,15 @@ Run the local build and test commands in
 
 1. re-runs the shared lint and test gates on the integrated commit;
 2. classifies `0.0.0` as `0.0.0-edge.<UTC timestamp>.<commit>`;
-3. stages only the six allowed files and creates the ZIP twice;
-4. requires both ZIPs to have the same SHA-256;
-5. validates the completed ZIP with the test project; and
-6. uploads the ZIP and adjacent checksum as a short-lived GitHub artifact.
+3. stages only the six allowed files and creates the ZIP with `7z`;
+4. writes `SHA256SUMS`;
+5. validates the completed ZIP with the test project;
+6. verifies the ZIP against `SHA256SUMS`; and
+7. uploads the ZIP and `SHA256SUMS` as a short-lived GitHub artifact.
 
 Packaging is CI-owned, so no repository-local command is presented as a
 second production packager. To inspect an edge artifact, download it from the
-successful Main workflow and verify its adjacent checksum before extraction.
+successful Main workflow and verify it with `SHA256SUMS` before extraction.
 
 ## Pre-release runtime checks
 
@@ -107,10 +108,9 @@ repository-specific result schema merely to approve a release.
 7. Run every development, workflow, package-contract, and documentation check.
 8. Push the reviewed commit to `main`.
 
-CI refuses an invalid version, a missing versioned changelog section, a
-nondeterministic or invalid archive, an incomplete release identity, and a
-published release that does not exactly match the integrated commit, ZIP, and
-immutable-release contract. The checksum remains in the workflow artifact for
+CI refuses an invalid version, a missing versioned changelog section, and an
+invalid archive. The pinned release action creates an immutable GitHub release
+for the integrated commit. `SHA256SUMS` remains in the workflow artifact for
 handoff verification; only the validated ZIP is attached to GitHub and
 submitted to Thunderstore. The release job never rebuilds it.
 
@@ -124,10 +124,10 @@ Never replace an existing published tag, release, or ZIP.
 
 If GitHub publication succeeds but Thunderstore submission fails, first confirm
 whether the package version is already present on Thunderstore. When it is not,
-rerun the failed Main workflow for the unchanged commit. The release job accepts
-an existing GitHub release only after its tag target, immutable state, asset
-names, and asset digests exactly match the validated artifact; it then retries
-the same reviewed ZIP without replacing or rebuilding the GitHub assets.
+do not rerun the Main workflow because immutable GitHub publication cannot be
+repeated for the same tag. Preserve the published ZIP and escalate creation of
+a narrowly scoped, reviewed Thunderstore-only recovery workflow. Do not replace
+the published tag, release, or ZIP.
 
 Update this document whenever version classification, archive content,
 workflow permissions, release calls, runtime expectations, or package-host

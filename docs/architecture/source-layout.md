@@ -59,10 +59,10 @@ format, and build entry point.
 ## Automation ownership
 
 `.github/` owns source validation, release classification, package staging,
-deterministic ZIP creation, checksum generation, artifact handoff, and stable
-GitHub and Thunderstore publication. Packaging is intentionally not a third
-.NET project. The test project validates both mutation fixtures and the
-completed CI-created archive.
+ZIP creation, checksum generation, artifact handoff, and stable GitHub and
+Thunderstore publication. Packaging is intentionally not a third .NET project.
+The test project validates both mutation fixtures and the completed CI-created
+archive.
 
 `assets/` owns the package manifest, user-facing README and changelog, editable
 icon source, and rendered icon. CI stages these files with the built DLL and
