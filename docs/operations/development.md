@@ -16,10 +16,10 @@ Run from the repository root:
 ```powershell
 dotnet restore VoiceOutputDeviceChanger.slnx --locked-mode
 dotnet format VoiceOutputDeviceChanger.slnx --no-restore --verify-no-changes
-dotnet build VoiceOutputDeviceChanger.slnx --no-restore -c Debug
-dotnet run --project VoiceOutputDeviceChanger.Tests --no-build -c Debug -- VoiceOutputDeviceChanger/bin/Debug/netstandard2.1/VoiceOutputDeviceChanger.dll 0.0.0 0.0.0
-dotnet build VoiceOutputDeviceChanger.slnx --no-restore -c Release
-dotnet run --project VoiceOutputDeviceChanger.Tests --no-build -c Release -- VoiceOutputDeviceChanger/bin/Release/netstandard2.1/VoiceOutputDeviceChanger.dll 0.0.0 0.0.0
+dotnet build VoiceOutputDeviceChanger.slnx --no-restore -c Debug /p:BepInExPluginVersion=0.0.0
+dotnet run --project VoiceOutputDeviceChanger.Tests --no-build -c Debug -- VoiceOutputDeviceChanger/bin/Debug/netstandard2.1/VoiceOutputDeviceChanger.dll 0.1.0-alpha.1 0.1.0-alpha.1
+dotnet build VoiceOutputDeviceChanger.slnx --no-restore -c Release /p:BepInExPluginVersion=0.0.0
+dotnet run --project VoiceOutputDeviceChanger.Tests --no-build -c Release -- VoiceOutputDeviceChanger/bin/Release/netstandard2.1/VoiceOutputDeviceChanger.dll 0.1.0-alpha.1 0.1.0-alpha.1
 ```
 
 The test project is a console harness rather than a test-framework package.
@@ -67,7 +67,8 @@ The built DLL must contain exactly one plugin entry point with:
 
 - GUID `com.aoirint.voiceoutputdevicechanger`;
 - name `Voice Output Device Changer`;
-- version matching the project version;
+- version matching the project version for stable builds, or `0.0.0` for
+  prerelease builds whose SemVer identity cannot be parsed by BepInEx 5;
 - process filter `Lethal Company.exe`.
 
 Use Mono.Cecil from the reviewed locked NuGet cache to inspect custom attributes without loading game dependencies.
@@ -92,7 +93,8 @@ Use the deterministic test harness first for queue, channel conversion, mixer,
 and lifecycle failures. Use the hardware-dependent run without
 `--skip-live-audio` only for endpoint enumeration, WASAPI startup, or device
 loss behavior. Gameplay hook, UI, and source-reuse failures require the
-clean-profile checks in [release operations](release.md#pre-release-runtime-checks).
+clean-profile checks in
+[release operations](release.md#stable-release-runtime-checks).
 
 ## Documentation checks
 

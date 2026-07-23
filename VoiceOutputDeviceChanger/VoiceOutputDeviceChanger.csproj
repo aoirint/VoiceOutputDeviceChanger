@@ -15,7 +15,7 @@
     <Product>Voice Output Device Changer</Product>
     <Description>Routes remote Lethal Company player voices to a selected Windows audio output device.</Description>
     <!-- APP_VERSION_MARKER -->
-    <Version>0.0.0</Version>
+    <Version>0.1.0-alpha.1</Version>
     <Authors>aoirint</Authors>
     <Company>aoirint</Company>
     <RepositoryUrl>https://github.com/aoirint/VoiceOutputDeviceChanger</RepositoryUrl>

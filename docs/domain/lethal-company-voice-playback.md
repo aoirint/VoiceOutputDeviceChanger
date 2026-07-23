@@ -80,7 +80,8 @@ The following behavior must be checked in the game before a stable release:
 - layout at supported resolutions and UI scales; and
 - interaction with other mods that patch the same methods or audio sources.
 
-Follow the [pre-release runtime checks](../operations/release.md#pre-release-runtime-checks)
+Follow the
+[stable release runtime checks](../operations/release.md#stable-release-runtime-checks)
 for the release procedure.
 
 ## Change checklist
@@ -91,4 +92,4 @@ When the supported game version changes:
 2. confirm every integration target still exists with the same role;
 3. confirm the relay scene, playback prefab, audio settings, and both settings
    controls still have the described relationships; and
-4. repeat the pre-release runtime checks.
+4. repeat the stable release runtime checks.

@@ -51,4 +51,4 @@ logging failure cannot rethrow into a game method.
 The Unity audio callback has its own allocation-free boolean path and performs no logging.
 
 This containment does not claim compatibility with arbitrary third-party transpilers or source replacements.
-Patch interaction remains part of the pre-release runtime checks.
+Patch interaction remains part of the stable release runtime checks.

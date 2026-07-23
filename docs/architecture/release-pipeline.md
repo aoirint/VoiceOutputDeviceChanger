@@ -5,18 +5,24 @@ and the [release operations contract](../operations/release.md).
 
 ## Version model
 
-`VoiceOutputDeviceChanger/VoiceOutputDeviceChanger.csproj` is the source of the three-part numeric plugin version.
-The generated BepInEx metadata and assembly version are derived from it.
+`VoiceOutputDeviceChanger/VoiceOutputDeviceChanger.csproj` is the source of the
+SemVer release identity.
+The generated assembly version, BepInEx metadata, artifact name, and Git tag are
+derived from it.
 
 - `0.0.0` is always an edge build. Its artifact version adds `edge`, the UTC
   build timestamp, and the first seven commit-SHA characters, but the
   loader-facing version remains `0.0.0`.
+- A SemVer prerelease such as `0.1.0-alpha.1` creates a GitHub prerelease.
+  Its assembly version uses the numeric core, while BepInEx metadata and the
+  Thunderstore manifest remain `0.0.0` because neither consumer accepts this
+  prerelease identity.
 - A nonzero numeric version is stable only when the developer and package
   changelogs contain that exact version and the maintainer has completed the
-  documented pre-release checks.
-- Prerelease strings are rejected because BepInEx 5 parses loader metadata as `System.Version`.
+  documented stable release checks.
 
-The classifier fails before packaging when the version syntax or stable changelog entry is invalid.
+The classifier fails before packaging when the version syntax or required
+changelog entry is invalid.
 
 ## Artifact flow
 
@@ -44,9 +50,10 @@ That output then follows this path:
 6. GitHub artifact storage carries those exact two files to the release job.
 7. The release job requires exactly one ZIP and checksum, then verifies the
    internal handoff before publishing only the ZIP.
-8. The pinned release action creates an immutable GitHub release for the
-   integrated commit and attaches only the ZIP.
-9. The same verified ZIP is submitted to Thunderstore.
+8. For a prerelease, the pinned release action creates an immutable GitHub
+   prerelease for the integrated commit and attaches only the ZIP.
+9. Stable GitHub and Thunderstore publication remain disabled until the
+   maintainer separately authorizes them after runtime validation.
 
 The release job never rebuilds the DLL.
 An existing release for the same tag causes publication to fail instead of
@@ -55,12 +62,11 @@ replacing its assets.
 ## Failure boundaries
 
 Lint, build, test, classification, packaging, or checksum failure prevents artifact upload or publication.
-Edge builds skip the release job.
+Edge and stable builds currently skip the release job.
 Every integrated edge build still uploads a versioned artifact and records the
 source commit, download URL, and GitHub artifact digest in the workflow summary.
-Stable GitHub publication creates a draft, attaches the ZIP, and only then
-publishes it. The checksum remains inside the workflow artifact. Thunderstore
-receives the already-verified ZIP afterward. If an
-upload or publish call fails, the GitHub release or draft can remain for
-maintainer inspection; recovery is documented in
+GitHub prerelease publication creates a draft, attaches the ZIP, and only then
+publishes it. The checksum remains inside the workflow artifact.
+If an upload or publish call fails, the GitHub prerelease or draft can remain
+for maintainer inspection; recovery is documented in
 [release operations](../operations/release.md).

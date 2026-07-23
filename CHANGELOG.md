@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.0-alpha.1] - 2026-07-23 UTC
+
 ### Added
 
 - A client-side BepInEx 5 plugin for the supported Lethal Company build on Windows.
@@ -22,8 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   checks, and branch-reaching mutation fixtures.
 - Event-owned GitHub Actions workflows that share source and package gates
   across pull requests, merge queues, and integrated commits.
-- Thunderstore-compatible package assets and stable publication using the same
-  archive released through GitHub.
+- Thunderstore-compatible package assets and dormant stable publication
+  machinery using the same archive released through GitHub.
 - APM-managed repository Skills, contributor governance, ownership, and
   canonical repository policies shared with related mods.
 - Domain, architecture, development, and release documentation for the supported game build and platform contracts.
@@ -62,7 +64,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   instead of a standalone package executable.
 - Reused the repository-family version classifier and limited superseded-run
   cancellation to pull-request events so merge-queue checks can complete.
-- Replaced the bespoke runtime-approval file and evidence matrix with a focused pre-release runtime checklist.
+- Replaced the bespoke runtime-approval file and evidence matrix with a focused
+  stable release runtime checklist.
 - Routes all remote sources through a single mixed renderer with deterministic shutdown.
 - Made settings-control cloning transactional so failed initialization leaves
   no partial selector that blocks a later retry.
@@ -85,3 +88,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Made the host-neutral package layout and rejection policy explicit as archive contract version 1.
 - Removed the private-repository publication restriction from the agent
   guidance in preparation for public source distribution.
+- Enabled GitHub-only prerelease publication while keeping BepInEx plugin
+  metadata and the Thunderstore manifest on loader- and host-compatible
+  placeholder versions.
+
+### Notes
+
+- This alpha is published to GitHub only. Stable GitHub and Thunderstore
+  publication remain disabled.
+- Static, deterministic, and package-contract validation is complete. The
+  documented clean-profile multiplayer and audio-device runtime checks remain
+  pending.

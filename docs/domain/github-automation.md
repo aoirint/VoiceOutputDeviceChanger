@@ -55,7 +55,8 @@ Action references.
 ## Permissions and repository policy
 
 Both entry workflows default to `contents: read`.
-Only the stable release job receives `contents: write`; pull-request code never receives a publishing credential.
+Only the GitHub prerelease job receives `contents: write`; pull-request code
+never receives a publishing credential.
 GitHub's default workflow-token permission is read-only.
 Repository policy requires full-length Action commit pins and immutable GitHub
 Releases. The selected-actions allowlist permits GitHub-owned Actions,
