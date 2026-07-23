@@ -56,19 +56,21 @@ The repository pins .NET SDK 10.0.201 and all NuGet versions.
 ```powershell
 dotnet restore VoiceOutputDeviceChanger.slnx --locked-mode
 dotnet format VoiceOutputDeviceChanger.slnx --no-restore --verify-no-changes
-dotnet build VoiceOutputDeviceChanger.slnx --no-restore -c Release
-dotnet run --project VoiceOutputDeviceChanger.Tests --no-build -c Release -- VoiceOutputDeviceChanger/bin/Release/netstandard2.1/VoiceOutputDeviceChanger.dll 0.0.0 0.0.0
+dotnet build VoiceOutputDeviceChanger.slnx --no-restore -c Release /p:BepInExPluginVersion=0.0.0
+dotnet run --project VoiceOutputDeviceChanger.Tests --no-build -c Release -- VoiceOutputDeviceChanger/bin/Release/netstandard2.1/VoiceOutputDeviceChanger.dll 0.1.0-alpha.1 0.1.0-alpha.1
 ```
 
-To create the same validated edge package produced by CI, follow [release operations](docs/operations/release.md).
+To create the same validated package produced by CI, follow
+[release operations](docs/operations/release.md).
 Every `main` build uploads a short-lived package artifact.
-Project version `0.0.0` is always classified as an edge build and never creates a GitHub Release.
+The current `0.1.0-alpha.1` version also creates an immutable GitHub prerelease.
+BepInEx loader metadata and the Thunderstore manifest remain `0.0.0` for this
+GitHub-only alpha because those consumers do not accept the SemVer prerelease
+label.
 
-A nonzero three-part project version with matching developer and package
-changelog sections is eligible for stable GitHub and Thunderstore releases.
-Maintainers must complete the runtime checks in
-[release operations](docs/operations/release.md) before raising the project
-version from `0.0.0`.
+Stable GitHub and Thunderstore publication remain disabled.
+Maintainers must complete the runtime checks in release operations before
+enabling them.
 
 ## Troubleshooting
 
