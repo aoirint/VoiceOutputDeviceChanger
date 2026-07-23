@@ -43,6 +43,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Kept package checksums inside the workflow artifact and limited public GitHub Releases to the validated ZIP.
 - Aligned immutable GitHub release publication with the shared pinned release
   action used by related mod repositories.
+- Added the pinned release action to the repository Actions allowlist.
 - Assigned CI runners by job requirements: lightweight Linux containers for
   metadata and publication, a full Linux VM for builds, and Windows only for
   the Windows-targeted executable smoke test.
