@@ -19,6 +19,7 @@ jobs:
   lint:
     # Keep proposed source validation separate from publishing privileges.
     runs-on: ubuntu-slim
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -28,7 +29,9 @@ jobs:
       - uses: ./.github/actions/lint-source
 
   test:
-    runs-on: windows-2025
+    # Smoke-test the Windows-targeted executable on the oldest supported
+    # Windows image; hosted runners skip the hardware-dependent audio probe.
+    runs-on: windows-2022
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

@@ -18,8 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Guarded Harmony integration that attaches only to controlled or dead remote
   player voice sources after the game's Dissonance refresh.
 - Deterministic core tests for channel conversion, ring wraparound, overflow, concurrent mixing, clamping, and reset behavior.
-- Deterministic package generation, semantic BepInEx metadata validation,
-  path-safety checks, and branch-reaching mutation fixtures.
+- CI-owned package generation, semantic BepInEx metadata validation, path-safety
+  checks, and branch-reaching mutation fixtures.
 - Event-owned GitHub Actions workflows that share source and package gates
   across pull requests, merge queues, and integrated commits.
 - Thunderstore-compatible package assets and stable publication using the same
@@ -41,6 +41,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Decoupled product CI from deployed Agent Skills while retaining repository-local APM metadata checks.
 - Kept package checksums inside the workflow artifact and limited public GitHub Releases to the validated ZIP.
+- Aligned immutable GitHub release publication with the shared pinned release
+  action used by related mod repositories.
+- Assigned CI runners by job requirements: lightweight Linux containers for
+  metadata and publication, a full Linux VM for builds, and Windows only for
+  the Windows-targeted executable smoke test.
+- Aligned package staging with the shared Bash, `jq`, `7z`, and `SHA256SUMS`
+  workflow used by related mod repositories.
 - Separated stable-version classification from explicit publication
   authorization without removing the stable release path.
 - Made project build policy explicit in each project file and retained
@@ -49,13 +56,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   section, product-focused headings, and canonical cross-links.
 - Reorganized the solution into plugin and test project directories, with Core
   and concrete Interop responsibilities mirrored by paths and namespaces.
-- Moved release classification, deterministic ZIP staging, and checksum
-  creation into GitHub Actions. Archive validation and mutation fixtures live
-  in the test project instead of a standalone package executable.
+- Moved release classification, ZIP staging, and checksum creation into GitHub
+  Actions. Archive validation and mutation fixtures live in the test project
+  instead of a standalone package executable.
 - Reused the repository-family version classifier and limited superseded-run
   cancellation to pull-request events so merge-queue checks can complete.
-- Made stable release retries reuse an existing immutable GitHub release only
-  when its commit and asset digests match the rebuilt validation artifact.
 - Replaced the bespoke runtime-approval file and evidence matrix with a focused pre-release runtime checklist.
 - Routes all remote sources through a single mixed renderer with deterministic shutdown.
 - Made settings-control cloning transactional so failed initialization leaves

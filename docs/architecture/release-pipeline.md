@@ -30,25 +30,27 @@ A read-only `plan` job resolves one release identity through the production
 classifier. The `build` job depends directly on `lint`, `test`, and `plan`, so a
 failed or skipped gate cannot be bypassed through cross-workflow polling.
 
-The Windows build job restores the locked graph and builds the release DLL.
+The Linux build job restores the locked graph and builds the release DLL.
+The separate Windows job smoke-tests the Windows-targeted test executable while
+skipping its hardware-dependent endpoint and WASAPI probe.
 That output then follows this path:
 
 1. The package mutation suite exercises the production validator in the test project.
 2. The workflow stages the DLL, manifest, icon, package README, package
-   changelog, and license twice and requires byte-identical ZIPs.
-3. The workflow writes an adjacent SHA-256 file.
+   changelog, and license, then creates the ZIP with the runner-provided `7z`.
+3. The workflow writes `SHA256SUMS` for the ZIP.
 4. The validator inspects archive paths, entry types, content, and managed custom attributes.
-5. GitHub artifact storage carries those exact two files to the release job.
-6. The release job requires exactly one ZIP and checksum, then verifies the
+5. The build job verifies the ZIP against `SHA256SUMS`.
+6. GitHub artifact storage carries those exact two files to the release job.
+7. The release job requires exactly one ZIP and checksum, then verifies the
    internal handoff before publishing only the ZIP.
-7. The published GitHub release record is checked for its tag, target commit,
-   immutable stable state, exact assets, and ZIP digest.
-8. The same verified ZIP is submitted to Thunderstore for stable versions.
+8. The pinned release action creates an immutable GitHub release for the
+   integrated commit and attaches only the ZIP.
+9. The same verified ZIP is submitted to Thunderstore.
 
 The release job never rebuilds the DLL.
-An incomplete or mismatched existing tag or release causes failure, and asset
-upload does not use replacement mode. An exact immutable release from the same
-commit may be reused only to recover the remaining Thunderstore publication.
+An existing release for the same tag causes publication to fail instead of
+replacing its assets.
 
 ## Failure boundaries
 
