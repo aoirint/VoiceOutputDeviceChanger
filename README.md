@@ -1,13 +1,18 @@
 # Voice Output Device Changer
 
+**This project is no longer maintained. Maintenance ended without runtime
+validation so that a potentially more effective alternative approach can be
+evaluated.**
+
 Voice Output Device Changer is a client-side BepInEx 5 Mono mod for Lethal
 Company on Windows. It sends voices from players other than the local player
 to a separately selected Windows audio output device. Music, effects, the
 local microphone sidetone, and other game audio remain on Unity's normal
 output.
 
-The implementation and build-time verification are complete.
-An in-game two-player validation run is still required before publishing a stable release.
+The implementation and build-time verification were completed.
+The planned in-game two-player validation run was not performed before
+maintenance ended.
 
 ## Requirements
 
