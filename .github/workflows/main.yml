@@ -126,7 +126,7 @@ jobs:
           if [[ "${{ needs.plan.outputs.release_mode }}" != "latest" ]]; then
             # BepInEx 5 parses plugin metadata as System.Version and rejects
             # prerelease and edge labels. Keep release identity in Version.
-            dotnet_build_args+=(/p:BepInExPluginVersion=0.0.0)
+            dotnet_build_args+=(-p:BepInExPluginVersion=0.0.0)
           fi
           dotnet build VoiceOutputDeviceChanger.slnx "${dotnet_build_args[@]}"
 

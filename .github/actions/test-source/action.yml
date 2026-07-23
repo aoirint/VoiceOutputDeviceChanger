@@ -25,7 +25,7 @@ runs:
         if [[ "${{ steps.project-version.outputs.version }}" == *"-"* ]]; then
           # BepInEx 5 parses plugin metadata as System.Version and rejects
           # SemVer prerelease labels. Keep the release identity in Version.
-          dotnet_build_args+=(/p:BepInExPluginVersion=0.0.0)
+          dotnet_build_args+=(-p:BepInExPluginVersion=0.0.0)
         fi
         dotnet build VoiceOutputDeviceChanger.slnx "${dotnet_build_args[@]}"
 
