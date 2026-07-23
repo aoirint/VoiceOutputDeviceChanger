@@ -39,6 +39,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Decoupled product CI from deployed Agent Skills while retaining repository-local APM metadata checks.
+- Kept package checksums inside the workflow artifact and limited public GitHub Releases to the validated ZIP.
+- Separated stable-version classification from explicit publication
+  authorization without removing the stable release path.
 - Made project build policy explicit in each project file and retained
   `global.json` as the shared SDK selection policy for local checks and CI.
 - Aligned game-domain and related documentation around one compatibility target
