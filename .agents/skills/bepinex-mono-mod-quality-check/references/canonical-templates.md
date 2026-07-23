@@ -34,16 +34,19 @@ Thunderstore templates apply only when the evidence ledger selects
 Thunderstore and the release workflow supplies the required reviewed inputs.
 Keep `thunderstore_namespace`, `thunderstore_community`, and
 `thunderstore_categories` as target-specific render variables; never replace
-them with values copied from another repository.
+them with values copied from another repository. Keep `enable_publication`
+`false` until the maintainer explicitly authorizes GitHub Release and
+package-host publication; a stable project version alone is not authorization.
 
 `assets/github/workflows/` contains rendered CI skeletons rather than
 exact-sync template IDs: project and package-host values are intentionally
 render variables. Render the paired `pull-request.yml.template`,
 `main.yml.template`, and the local `install-workflow-tools`, `setup-dotnet`,
-`lint-source`, `generate-version`, and `publish-thunderstore` Composite Actions,
-including the publisher script, together. A workflow change that adds or
-changes a local-action reference or input is incomplete until the renderer
-deploys the complete matching action in the same invocation. The small actions expose their
+`check-apm-project`, `lint-source`, `generate-version`, and
+`publish-thunderstore` Composite Actions, including the publisher script,
+together. A workflow change that adds or changes a local-action reference or
+input is incomplete until the renderer deploys the complete matching action in
+the same invocation. The small actions expose their
 individual toolchain, environment, and lint responsibilities; `lint-source`
 validates source on the caller's runner;
 `Main` repeats that validation on the pushed integration commit, resolves
@@ -62,12 +65,12 @@ host. Render them without adopting a publishing workflow:
   -RepoRoot . -Apply -ProjectDirectory ExampleMod
 ```
 
-Use `-Check` with the same project directory in CI. The rendered `lint-source`
-Composite Action includes this gate. Document the same command in target
-contributor guidance when maintainers expect it to run locally. The renderer
-changes only `.gitignore` and `.markdownlint-cli2.yaml`; use the exact-sync
-template IDs for `.gitattributes`, contributor policy, and the pull request
-template.
+Use `-Check` with the same project directory during authoring and review.
+Document the command in target contributor guidance when maintainers expect it
+to run locally. Do not add it to consumer CI: rendered workflows and actions
+must remain functional when `.agents/skills/` is absent. The renderer changes
+only `.gitignore` and `.markdownlint-cli2.yaml`; use the exact-sync template IDs
+for `.gitattributes`, contributor policy, and the pull request template.
 
 ## Initial provenance
 
@@ -98,13 +101,17 @@ repository contract; omitting `-Template` selects all bundled templates.
   -Template repository-contributing,github-pull-request-template
 ```
 
-Use the same selection in contributor documentation and CI, replacing
-`-Apply` with `-Check`. The check fails when a selected destination is missing
-or modified. YAML must match exactly after Git-policy line-ending
-normalization; executable shell files must match byte-for-byte, including LF.
+Use the same selection in contributor documentation and authoring-time review,
+replacing `-Apply` with `-Check`. Do not execute the installed Skill from
+consumer CI. The check fails when a selected destination is missing or
+modified. YAML must match exactly after Git-policy line-ending normalization;
+executable shell files must match byte-for-byte, including LF.
 Select `repository-contributing` and `github-pull-request-template` together;
 they are not independently adoptable because the checkbox confirms the
-agreement in the companion document.
+agreement in the companion document. This pair contains contribution licensing
+terms and is applicable only after the maintainer explicitly selects the
+project license and those terms. While either decision is blocked, use
+license-neutral contributor guidance without a CLA checkbox.
 
 ## Improve without drift
 

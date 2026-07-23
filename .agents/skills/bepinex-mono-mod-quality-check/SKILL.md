@@ -51,9 +51,11 @@ namespace; they do not replace this Skill's quality bar.
 - Commit an SDK-style project, `nuget.config` with explicit sources and package source mapping, `global.json` selecting
   the release SDK, one `packages.lock.json` per resolving project, a narrow `.gitignore`, Markdown lint configuration,
   and contributor documentation.
-- Keep the contributor agreement and the pull-request confirmation internally complete. When adopting the bundled
-  contract, deploy `repository-contributing` and `github-pull-request-template` together; never infer that a CLA
-  checkbox is unsupported without inspecting its referenced `CONTRIBUTING.md` section.
+- Keep the contributor agreement and the pull-request confirmation internally complete. Adopt the bundled CLA contract
+  only after the maintainer explicitly selects the project license and contribution terms; otherwise use
+  license-neutral contributor guidance without a CLA checkbox. When adopting the bundled contract, deploy
+  `repository-contributing` and `github-pull-request-template` together; never infer that a CLA checkbox is unsupported
+  without inspecting its referenced `CONTRIBUTING.md` section.
 - For C# changes, require locked restore, format verification without restore, and a no-restore build. For Markdown,
   workflow, shell, APM, package, or release changes, apply the corresponding checks in
   [repository-quality-template.md](references/repository-quality-template.md).
@@ -67,7 +69,9 @@ namespace; they do not replace this Skill's quality bar.
   needed to classify the current version. Do not add manual dispatch or polling jobs without a documented
   operator/recovery need.
 - When the target adopts a bundled CI or publishing contract, copy its files exactly from this Skill's canonical
-  `assets/` and enforce the manifest's exact-content drift checks. Follow
+  `assets/` and verify them from the installed Skill during authoring and review. Consumer CI must run only committed
+  repository-owned actions and scripts; it must not execute `.agents/skills/` or require this Skill at workflow
+  runtime. Follow
   [canonical-templates.md](references/canonical-templates.md) for selection, synchronization, validation, and rollout;
   do not fork a template silently.
 - Treat a missing required file, unpinned external executable input, unreviewed package source, absent lockfile, or
@@ -105,8 +109,8 @@ conditional branches, verification matrix, and report format. Do not replace tha
      normative file-by-file standard, not permission to fork a designated repository family's portable conventions.
    - If the evidence ledger enables a contract represented by a bundled template, read
      [canonical-templates.md](references/canonical-templates.md), select only the applicable template IDs, and use the
-     sync script for both application and CI drift checks. Keep target-specific workflow values in the caller, not in a
-     copied action.
+     sync script for application and authoring-time drift checks. Keep target-specific workflow values in the caller,
+     not in a copied action. Do not make consumer CI depend on the installed Skill.
    - When a patch, reflection target, serialized name/value, Unity object, game lifecycle, or build-compatibility claim
      lacks a closed target-build trace, use `unity-game-analyze` and record its evidence handoff. Do not reconstruct the
      Unity code/asset procedure informally inside the mod review.
@@ -216,12 +220,14 @@ conditional branches, verification matrix, and report format. Do not replace tha
      exact plugin-DLL count, prohibited contents, and archive path-safety rules; add a host-specific extension only from
      the selected host's authoritative contract. Do not substitute another host's manifest or layout.
    - Reconcile package manifest identity, version, dependencies, compatibility claims, README, changelog, icon, and
-     license with the release intent.
+     any explicitly selected license with the release intent. Do not create, infer, or package a license until the
+     maintainer selects one.
    - Separate package readiness from publication authorization. When the evidence ledger confirms a distribution host,
      keep the repository family's portable manifest, package README, user-facing changelog, editable and rendered icon,
-     license, final-archive validation, and inert publisher tooling complete even when an external upload is not yet
-     enabled. If the host is blocked or explicitly none, do not invent or borrow host-specific metadata. Gate the
-     publication side effect on explicit host, namespace, category, credential, runtime, and release-mode approval.
+     final-archive validation, inert publisher tooling, and a license only when explicitly selected complete even when
+     an external upload is not yet enabled. If the host is blocked or explicitly none, do not invent or borrow
+     host-specific metadata. Gate the publication side effect on explicit host, namespace, category, credential,
+     runtime, and release-mode approval.
    - Verify version synchronization from produced outputs, not duplicated source literals. Generate loader-facing
      metadata from the project version or inspect the built assembly and compare project, assembly, loader-facing,
      manifest, archive, and tag versions that are enabled for the release.
@@ -234,6 +240,8 @@ conditional branches, verification matrix, and report format. Do not replace tha
      distinct publication-facing source or explicitly declare the canonical changelog dual-purpose; do not describe a
      derivation step that packaging does not perform. Do not claim untested game compatibility or publish a version
      already represented by an immutable release.
+   - Treat `0.0.0` as a development placeholder, not a released changelog version. Keep pending work under
+     `Unreleased` until a real release version and date are selected.
    - A negative package fixture proves only the first production guard it reaches. Derive it from the passing fixture,
      preserve every earlier invariant, mutate the intended property, and assert the intended branch-specific diagnostic
      or result. A generic exception or nonzero exit does not prove the advertised rejection branch.
@@ -248,6 +256,8 @@ conditional branches, verification matrix, and report format. Do not replace tha
      setting available. Automation must attach every asset before publishing the release and must fail rather than
      replace an existing tag, release, or asset. If the setting is unavailable, record the residual risk and require an
      explicit fail-on-existing-release/tag/asset path instead of silently treating releases as immutable.
+   - Keep checksum material used to verify the build-to-release handoff inside the workflow artifact by default.
+     Publish only the package archive unless the repository has an explicit user-facing checksum-asset contract.
    - Trace one release from its source commit through locked restore, build, archived artifact, and release asset.
      Publish only the artifact produced by that build; do not rebuild a separately checked-out revision in the release
      job. Create and verify an artifact digest across the build and release jobs.
@@ -255,7 +265,8 @@ conditional branches, verification matrix, and report format. Do not replace tha
      verified mechanism before restore. Do not assume a hosted runner already contains the release-critical SDK.
    - Separate validation artifacts, prereleases, and stable publishing according to the repository's version rules. Gate
      external package-host publication on the intended stable release mode and require exactly one reviewed package
-     artifact.
+     artifact. Keep a separate committed publication-authorization input disabled until the maintainer explicitly
+     approves the side effect; a stable version alone is not authorization.
    - Retain every integration-branch edge build as a workflow artifact, with its source commit and digest visible in the
      workflow summary, even when the edge version is deliberately not published.
    - Keep archive creation CI-owned. A locally callable validator is useful, but a second repository-local production
@@ -287,6 +298,9 @@ conditional branches, verification matrix, and report format. Do not replace tha
    - If the maintainer marks content for history rewriting, correct the current tree, inspect every reachable branch and
      tag for the exact unwanted text, and rewrite only the authorized repository before publication or coordinated
      force-push. Re-scan after rewriting. Do not disclose the removed private text in a public commit or pull request.
+     Use `commit-message-quality-check` for reconstructed commits so required contribution attribution is preserved.
+   - Preserve repository visibility. Creating a repository, changing its visibility, or enabling public package or
+     release publication requires an explicit maintainer instruction; a migration request alone does not authorize it.
 8. Report the result in this order: scope and evidence consulted; findings grouped by
    structure/plugin/build/CI/package/runtime; checks passed or skipped; and remaining compatibility or release risks.
    State every omitted baseline item and its concrete constraint; do not report a quality pass based only on an existing

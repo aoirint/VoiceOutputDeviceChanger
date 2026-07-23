@@ -234,7 +234,9 @@ jobs:
     needs:
       - build
       - plan
-    if: needs.plan.outputs.release_mode == 'latest'
+    # Keep stable publication ready without treating a version change as
+    # publication authorization.
+    if: false && needs.plan.outputs.release_mode == 'latest'
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -288,7 +290,6 @@ jobs:
           fi
 
           expected_digest="sha256:$(cut -d ' ' -f 1 "artifacts/${ARCHIVE_NAME}.sha256")"
-          expected_checksum_digest="sha256:$(sha256sum "artifacts/${ARCHIVE_NAME}.sha256" | cut -d ' ' -f 1)"
           [[ "$(jq -r '.object.type' <<< "${tag_json}")" == "commit" ]]
           [[ "$(jq -r '.object.sha' <<< "${tag_json}")" == "${GITHUB_SHA}" ]]
           [[ "$(jq -r '.tag_name' <<< "${release_json}")" == "${RELEASE_TAG}" ]]
@@ -296,9 +297,8 @@ jobs:
           [[ "$(jq -r '.draft' <<< "${release_json}")" == "false" ]]
           [[ "$(jq -r '.prerelease' <<< "${release_json}")" == "false" ]]
           [[ "$(jq -r '.immutable' <<< "${release_json}")" == "true" ]]
-          [[ "$(jq '.assets | length' <<< "${release_json}")" -eq 2 ]]
+          [[ "$(jq '.assets | length' <<< "${release_json}")" -eq 1 ]]
           [[ "$(jq -r --arg name "${ARCHIVE_NAME}" '.assets[] | select(.name == $name) | .digest' <<< "${release_json}")" == "${expected_digest}" ]]
-          [[ "$(jq -r --arg name "${ARCHIVE_NAME}.sha256" '.assets[] | select(.name == $name) | .digest' <<< "${release_json}")" == "${expected_checksum_digest}" ]]
           release_id=$(jq -r '.id' <<< "${release_json}")
           if [[ ! "${release_id}" =~ ^[0-9]+$ ]]; then
             echo "Existing release has an invalid ID." >&2
@@ -330,7 +330,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ needs.plan.outputs.tag }}
-        run: gh release upload "${RELEASE_TAG}" artifacts/*.zip artifacts/*.sha256
+        run: gh release upload "${RELEASE_TAG}" artifacts/*.zip
 
       - name: Publish immutable release
         if: steps.release-state.outputs.reuse != 'true'
@@ -350,16 +350,14 @@ jobs:
         run: |
           set -euo pipefail
           expected_digest="sha256:$(cut -d ' ' -f 1 "artifacts/${ARCHIVE_NAME}.sha256")"
-          expected_checksum_digest="sha256:$(sha256sum "artifacts/${ARCHIVE_NAME}.sha256" | cut -d ' ' -f 1)"
           release_json=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}")
           [[ "$(jq -r '.tag_name' <<< "${release_json}")" == "${RELEASE_TAG}" ]]
           [[ "$(jq -r '.target_commitish' <<< "${release_json}")" == "${GITHUB_SHA}" ]]
           [[ "$(jq -r '.draft' <<< "${release_json}")" == "false" ]]
           [[ "$(jq -r '.prerelease' <<< "${release_json}")" == "false" ]]
           [[ "$(jq -r '.immutable' <<< "${release_json}")" == "true" ]]
-          [[ "$(jq '.assets | length' <<< "${release_json}")" -eq 2 ]]
+          [[ "$(jq '.assets | length' <<< "${release_json}")" -eq 1 ]]
           [[ "$(jq -r --arg name "${ARCHIVE_NAME}" '.assets[] | select(.name == $name) | .digest' <<< "${release_json}")" == "${expected_digest}" ]]
-          [[ "$(jq -r --arg name "${ARCHIVE_NAME}.sha256" '.assets[] | select(.name == $name) | .digest' <<< "${release_json}")" == "${expected_checksum_digest}" ]]
 
       - name: Publish stable release to Thunderstore
         uses: ./.github/actions/publish-thunderstore

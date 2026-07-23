@@ -70,13 +70,14 @@ recorded in the evidence ledger and completion report.
 | `.gitignore` | narrow local/generated rules; never hides source, assets, lockfiles, or docs | none |
 | `README.md` | setup, checks, debugging, packaging, compatibility evidence, release path | none |
 | `CONTRIBUTING.md` | change-to-check matrix and contributor requirements | none |
-| `CHANGELOG.md` and `LICENSE` | intentional release-history and license roles | repository has an explicit replacement, named in the report |
+| `CHANGELOG.md` | intentional release-history role; `Unreleased` for work not assigned a release version | repository has an explicit replacement, named in the report |
+| `LICENSE` | selected license text and package role | maintainer has not explicitly selected a license; omission is required |
 | `.markdownlint-cli2.yaml` | lint committed Markdown, respect `.gitignore`, narrow documented exceptions | none |
 | versioned archive contract | host-neutral root/path/DLL/prohibited-content rules | no package/archive is produced, with evidence |
 | APM files and deployed output | `apm.yml`, lock, generated target as one unit | ledger says APM `no` |
 | GitHub workflows/actions | event-owned pull-request and integration-branch workflows, shared lint gate, build/release only when enabled | ledger says GitHub Actions `no` |
 | Host manifest/publish action | exact selected-host extension only | host is `none` or blocked |
-| Canonical-template selection | selected template IDs, canonical-content destinations, documented `-Check` command | no bundled template matches the enabled contract |
+| Canonical-template selection | selected template IDs, canonical-content destinations, documented authoring-time `-Check` command | no bundled template matches the enabled contract |
 
 ## 4. Apply changes in dependency order
 
@@ -106,7 +107,11 @@ independent stages.
    disabled rule inline.
 7. When the evidence ledger enables a bundled template, select its IDs from
    `assets/template-map.json`, apply them with `scripts/sync_templates.ps1`, and
-   add the same selection with `-Check` to contributor documentation and CI.
+   add the same selection with `-Check` to contributor documentation for
+   authoring-time review. Never invoke the installed Skill from consumer CI.
+   Do not select the bundled contributor/CLA pair until the maintainer
+   explicitly selects both the project license and contribution terms; use
+   license-neutral contributor guidance while either decision is blocked.
    Do not apply Thunderstore templates when the package host is absent,
    blocked, or different.
 8. Render the shared `.gitignore` and Markdown policy with
@@ -249,10 +254,11 @@ independent stages.
 3. Track package readiness separately from publication authorization. When the
    evidence ledger confirms the repository family's distribution host, prepare its authoritative
    manifest, root layout, dependency syntax, package README, user-facing
-   changelog, editable icon source, rendered icon, license, version handling,
-   and inert publisher action even when the repository does not currently
-   publish there. Keep editable sources and publisher tooling in the repository,
-   not in the user package. Validate only the host-required distributable files
+   changelog, editable icon source, rendered icon, version handling, an
+   explicitly selected license, and inert publisher action even when the
+   repository does not currently publish there. Omit license files while the
+   selection is blocked. Keep editable sources and publisher tooling in the
+   repository, not in the user package. Validate only the host-required distributable files
    against the authoritative final-archive layout. Keep the external upload step
    disabled until the maintainer authorizes the namespace,
    categories, credential, and release mode. Do not use one host's manifest or
@@ -307,7 +313,9 @@ independent stages.
    digest from the integration-branch commit, then uploads it for every build
    including unpublished edge builds; publish only a downloaded-and-verified copy.
    The release job alone receives `contents: write`; it creates a draft, adds
-   all assets and checksum, then publishes. It fails on an existing tag,
+   the package archive, then publishes. Keep the checksum used for handoff
+   verification internal unless an explicit public checksum-asset contract
+   requires it. The job fails on an existing tag,
    release, or asset and never rebuilds or replaces an artifact. Require
    immutable releases where available; otherwise record residual risk. After
    publication, query the release record and verify its tag, target commit,
@@ -316,6 +324,9 @@ independent stages.
 5. If external publishing is enabled, gate it to the confirmed stable mode,
    exactly one reviewed prebuilt archive, passing digest/archive/runtime checks,
    and a credential scoped to the one publish step. Never expose it to PR jobs.
+   Keep the committed publication-authorization input disabled until the
+   maintainer explicitly approves the side effect; a version change is not
+   authorization.
 
 ## 5. Conditional branches
 
@@ -326,6 +337,8 @@ independent stages.
 | GitHub Releases = no | retain archive/digest validation if packaging | require draft/immutable-release behavior |
 | Package host = none or blocked | keep host-neutral archive requirements and record the blocker or deliberate omission | invent or borrow a host-specific manifest, layout, category, or publisher |
 | Active external publishing = no, confirmed package host | keep family package assets, archive validation, and inert publisher tooling ready | execute an upload or omit release-readiness assets solely because publication is disabled |
+| License not explicitly selected | omit `LICENSE` and license package content; record the decision as blocked | infer a license from peers, repository defaults, or source headers |
+| Project version = `0.0.0` | keep pending changelog entries under `Unreleased` and retain edge artifacts | create a `0.0.0` release heading, tag, or stable release |
 | Package host = Thunderstore | apply Thunderstore section in the template | publish edge/prerelease without a supported contract |
 | Custom package host | add only verified host extension | borrow Thunderstore/GitHub metadata |
 | No automated tests | record no-test status and test strategy | invent a test command |
@@ -354,7 +367,7 @@ not passed; record the command, reason, and resulting risk.
 | Lifecycle predicate change | positive-and-adjacent-negative truth table | every named positive passes; loading/departing/travelling/reset/unavailable negatives fail unless explicitly included |
 | NuGet source/package/lock change | source/publisher/version/hash/license/transitive/age review | ledger records approval; mapping/locks cover every resolver |
 | Workflow/action/shell change | ShellCheck, `actionlint`, `pinact run --check --min-age 7`, manual pin/permission/concurrency/secret review | all pass; every executable input is pinned/verified |
-| Bundled template adopted or changed | run `sync_templates.ps1 -Check` with the repository's selected IDs in the canonical Skill and every opted-in consumer | every selected destination exists and satisfies its manifest comparison mode; exclusions and local variants are documented |
+| Bundled template adopted or changed | run `sync_templates.ps1 -Check` from the installed Skill during authoring with the repository's selected IDs in the canonical Skill and every opted-in consumer | every selected destination exists and satisfies its manifest comparison mode; exclusions and local variants are documented; consumer CI has no `.agents/skills/` runtime dependency |
 | Lint/check config or contributor command | trace config to local command and enabled CI step | each retained config is consumed and every promised command is runnable in both documented and CI contexts |
 | APM change | `apm lock`; lock review; `apm install --frozen`; `apm audit --ci` | expected refs/hashes and no drift |
 | Package/release change | clean staging, archive-contract inspection, SHA-256, exact-artifact handoff check | one valid archive; digest matches |
@@ -362,7 +375,7 @@ not passed; record the command, reason, and resulting risk.
 | Validator/policy fixture | invoke production command/path or the exact shared library it calls | fixture failure proves production enforcement; no duplicated test-only rule implementation |
 | Compatibility/release claim | clean-profile runtime test | record exact game build, BepInEx version, mod set, install path, scenario, result |
 | Structured validation logging requested | inspect representative startup, success, denial/failure, receiver/apply, restoration, and swallowed-exception records | role is observed or neutral rather than asserted; records prove the named outcome with boundary/source, result, and only necessary bounded before/after values; inner and outer swallowed exceptions are recorded; privacy exclusions hold |
-| GitHub Release | repository-setting review, fail-on-existing release path, and post-publication release-record inspection | settings/gaps recorded; tag and target commit match; immutability, prerelease/stable mode, asset count, and asset digest match; intentionally skipped host publishing is recorded |
+| GitHub Release | repository-setting review, fail-on-existing release path, and post-publication release-record inspection | settings/gaps recorded; tag and target commit match; immutability, prerelease/stable mode, exact intended asset list, and archive digest match; intentionally skipped host publishing is recorded |
 
 ## 7. Completion report
 

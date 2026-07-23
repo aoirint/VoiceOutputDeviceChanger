@@ -39,7 +39,8 @@ That output then follows this path:
 3. The workflow writes an adjacent SHA-256 file.
 4. The validator inspects archive paths, entry types, content, and managed custom attributes.
 5. GitHub artifact storage carries those exact two files to the release job.
-6. The release job requires exactly one ZIP and checksum, then verifies the digest before publishing.
+6. The release job requires exactly one ZIP and checksum, then verifies the
+   internal handoff before publishing only the ZIP.
 7. The published GitHub release record is checked for its tag, target commit,
    immutable stable state, exact assets, and ZIP digest.
 8. The same verified ZIP is submitted to Thunderstore for stable versions.
@@ -55,8 +56,9 @@ Lint, build, test, classification, packaging, or checksum failure prevents artif
 Edge builds skip the release job.
 Every integrated edge build still uploads a versioned artifact and records the
 source commit, download URL, and GitHub artifact digest in the workflow summary.
-Stable GitHub publication creates a draft, attaches both assets, and only then
-publishes it. Thunderstore receives the already-verified ZIP afterward. If an
+Stable GitHub publication creates a draft, attaches the ZIP, and only then
+publishes it. The checksum remains inside the workflow artifact. Thunderstore
+receives the already-verified ZIP afterward. If an
 upload or publish call fails, the GitHub release or draft can remain for
 maintainer inspection; recovery is documented in
 [release operations](../operations/release.md).

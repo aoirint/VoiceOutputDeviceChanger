@@ -114,7 +114,8 @@ jobs:
           mkdir -p "${TMP_ARTIFACT_DIR}/${ARTIFACT_STEM}"
 
           # Keep this layout as the Thunderstore package root; consumers expect
-          # the DLL, manifest, icon, docs, changelog, and license at zip root.
+          # the DLL, manifest, icon, docs, changelog, and any selected license
+          # at zip root.
           # https://thunderstore.io/c/lethal-company/create/docs/
 
           mv ./@@PROJECT_DIRECTORY@@/bin/Release/netstandard2.1/@@PLUGIN_ASSEMBLY@@  "${TMP_ARTIFACT_DIR}/${ARTIFACT_STEM}/"
@@ -123,7 +124,9 @@ jobs:
           cp ./assets/icon.png  "${TMP_ARTIFACT_DIR}/${ARTIFACT_STEM}/"
           cp ./assets/README.md  "${TMP_ARTIFACT_DIR}/${ARTIFACT_STEM}/"
           cp ./assets/CHANGELOG.md  "${TMP_ARTIFACT_DIR}/${ARTIFACT_STEM}/"
-          cp ./LICENSE  "${TMP_ARTIFACT_DIR}/${ARTIFACT_STEM}/"
+          if [ -f ./LICENSE ]; then
+            cp ./LICENSE  "${TMP_ARTIFACT_DIR}/${ARTIFACT_STEM}/"
+          fi
 
           cd "${TMP_ARTIFACT_DIR}/${ARTIFACT_STEM}"
 
@@ -184,7 +187,9 @@ jobs:
       - plan
     # Edge builds are validation artifacts only; GitHub releases are created
     # only for new project versions that should receive a tag.
-    if: needs.plan.outputs.release_mode != 'edge'
+    # Keep the stable release path ready without treating a version change as
+    # publication authorization.
+    if: @@ENABLE_PUBLICATION@@ && needs.plan.outputs.release_mode != 'edge'
 
     # Keep this on ubuntu-slim: release publishing only needs standard shell tools
     # included in that image, and does not require ubuntu-latest's larger toolset.
@@ -220,10 +225,9 @@ jobs:
           prerelease: ${{ needs.plan.outputs.release_mode != 'latest' }}
           makeLatest: ${{ needs.plan.outputs.release_mode == 'latest' }}
           generateReleaseNotes: true
-          artifacts: |
-            ./tmp_artifacts/*.zip
-            ./tmp_artifacts/SHA256SUMS
+          artifacts: ./tmp_artifacts/*.zip
           artifactErrorsFailBuild: true
+          artifactContentType: application/zip
 
       - name: Verify published release record
         env:
@@ -233,15 +237,13 @@ jobs:
           set -euo pipefail
           archive_name=$(awk 'NR == 1 { print $2 }' ./tmp_artifacts/SHA256SUMS)
           expected_archive_digest="sha256:$(sha256sum "./tmp_artifacts/${archive_name}" | cut -d ' ' -f 1)"
-          expected_sums_digest="sha256:$(sha256sum ./tmp_artifacts/SHA256SUMS | cut -d ' ' -f 1)"
           release_json=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}")
           [[ "$(jq -r '.tag_name' <<< "${release_json}")" == "${RELEASE_TAG}" ]]
           [[ "$(jq -r '.target_commitish' <<< "${release_json}")" == "${GITHUB_SHA}" ]]
           [[ "$(jq -r '.draft' <<< "${release_json}")" == "false" ]]
           [[ "$(jq -r '.immutable' <<< "${release_json}")" == "true" ]]
-          [[ "$(jq '.assets | length' <<< "${release_json}")" -eq 2 ]]
+          [[ "$(jq '.assets | length' <<< "${release_json}")" -eq 1 ]]
           [[ "$(jq -r --arg name "${archive_name}" '.assets[] | select(.name == $name) | .digest' <<< "${release_json}")" == "${expected_archive_digest}" ]]
-          [[ "$(jq -r '.assets[] | select(.name == "SHA256SUMS") | .digest' <<< "${release_json}")" == "${expected_sums_digest}" ]]
 
       - name: Publish stable release to Thunderstore
         id: publish-thunderstore
