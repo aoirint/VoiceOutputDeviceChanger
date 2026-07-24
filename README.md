@@ -14,16 +14,19 @@ The implementation and build-time verification were completed.
 The planned in-game two-player validation run was not performed before
 maintenance ended.
 
-## Requirements
+## Compatibility
 
-- The supported Lethal Company build for Windows, documented under
-  [game voice playback](docs/domain/lethal-company-voice-playback.md).
-- BepInEx 5.x Mono installed in the game directory.
-- A Windows audio render endpoint available through Core Audio.
+- Lethal Company v81 (2026-04-17 UTC, Manifest ID:
+  `6423525044216269478`)
+    - Package dependency
+        - [BepInExPack][bepinexpack-package] v5.4.2305 (2026-03-17 UTC)
+- Windows with an audio render endpoint available through Core Audio.
 
 This mod is client-side and does not send network messages or require
 installation by the host or other players.
 Other game versions are not currently supported.
+The exact target identifiers and integration evidence are documented under
+[game voice playback](docs/domain/lethal-company-voice-playback.md).
 
 ## Install
 
@@ -36,7 +39,11 @@ Other game versions are not currently supported.
 Only the mod DLL is installed.
 Do not copy build-time BepInEx, Harmony, Unity, or game assemblies from the NuGet cache or game files.
 
-## Configure
+## Configuration
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `General.RemoteVoiceOutputEndpointId` | `string` | Empty | Windows endpoint ID for remote player voices. Empty uses the current multimedia default. |
 
 Open the normal settings screen from either the main menu or the in-game quick menu.
 The mod adds a `REMOTE VOICE OUTPUT` option below the microphone device option.
@@ -103,3 +110,5 @@ under [Lethal Company voice playback](docs/domain/lethal-company-voice-playback.
 ## License
 
 This project is released under the [MIT License](LICENSE).
+
+[bepinexpack-package]: https://thunderstore.io/c/lethal-company/p/BepInEx/BepInExPack/

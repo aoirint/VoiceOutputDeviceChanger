@@ -104,7 +104,20 @@ the target-specific threat or compatibility condition.
    terminology. Avoid repeating the game version in filenames, headings, and
    prose when one compatibility owner already establishes it. Use direct
    domain wording instead of foregrounding analysis or trace mechanics.
-2. When the maintainer explicitly requests a history rewrite, treat unwanted
+2. Align presentation separately from product evidence. Reuse the family's
+   section order, table columns, and prose shape, but preserve product-specific
+   setup, settings, limitations, and claims. Keep root and package-facing
+   READMEs synchronized on shared facts while retaining their distinct
+   maintainer and package-user audiences. Prefer the family configuration table
+   when peers use one; copy its shape, not another product's rows.
+3. Treat metadata attached to an exactly identified shared artifact as
+   portable once identity and version agree. For example, a game-manifest date
+   or dependency-release date may move with the same manifest or dependency
+   version; it is not evidence that the target mod completed runtime testing.
+   Do not delete a portable fact merely because the target did not observe it
+   independently. When a low-level identifier is redundant in user-facing
+   prose, omit it only after confirming a canonical technical owner retains it.
+4. When the maintainer explicitly requests a history rewrite, treat unwanted
    private names, machine paths, or incorrect license text as a reachable-ref
    audit. Before claiming removal, enumerate the retained or published ref
    namespaces in scope, including relevant local and remote-tracking branches,

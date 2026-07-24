@@ -173,7 +173,11 @@ or MCP dependency:
    review gate and do not put tokens in tracked YAML.
 5. Run `apm lock` to resolve and download without deploying to agent targets.
    Review `apm.lock.yaml`: each dependency must resolve to the expected commit
-   and carry its content hash. Commit the manifest and lockfile together.
+   and carry its content hash. In PowerShell checks, wrap variable-cardinality
+   query results in `@(...)` before using `.Count`, indexing, or membership
+   tests; one result otherwise becomes a scalar while multiple results become
+   an array. Assert the expected count and element type. Commit the manifest
+   and lockfile together.
 6. Run `apm install --frozen` only after that review. It must reproduce the
    reviewed lockfile and must not resolve a new dependency. Never use
    `--force`, `--allow-insecure`, or an insecure HTTP source unless an explicit
