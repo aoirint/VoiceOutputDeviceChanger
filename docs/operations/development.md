@@ -51,7 +51,7 @@ and the full verification matrix.
 
 ## Restore Agent Skills
 
-Use APM CLI 0.25.0 from the repository root:
+Use APM CLI 0.26.0 from the repository root:
 
 ```powershell
 apm install --frozen
