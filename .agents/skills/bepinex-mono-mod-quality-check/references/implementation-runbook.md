@@ -98,10 +98,12 @@ independent stages.
    separate, commit-linked block below local rules.
 4. Run `git status --short`. Stop and correct the ignore rules if a source,
    asset, lockfile, or document that must be committed becomes hidden.
-5. Write README and CONTRIBUTING content from the evidence ledger. README names
-   setup, restore, format, build, test, debugging, packaging, compatibility
-   evidence, and release steps. CONTRIBUTING maps each changed surface to its
-   required verification.
+5. Write README and CONTRIBUTING content from the evidence ledger. Keep the
+   root README's maintainer-facing setup, restore, format, build, test,
+   debugging, packaging, compatibility evidence, and release path distinct
+   from concise package-user installation, configuration, compatibility, and
+   usage guidance. Synchronize shared facts between both READMEs.
+   CONTRIBUTING maps each changed surface to its required verification.
 6. Add Markdown lint configuration. It must target committed `**/*.md`, honor
    `.gitignore`, exclude only transient agent/worktree paths, and explain every
    disabled rule inline.
@@ -268,6 +270,12 @@ independent stages.
    identity, release version, supported game/loader baseline, and dependencies
    required by the product contract. Verify those claims against the project
    and evidence ledger; do not accept an undistributed root README as proof.
+   Validate semantic claims such as artifact identity and version rather than
+   incidental prose fragments, headings, or punctuation. When user-facing
+   wording changes, update any presentation-coupled validator to the semantic
+   contract instead of forcing awkward prose. Add a focused negative fixture
+   that starts from the passing package and changes only the intended claim,
+   then assert its stable diagnostic.
 5. Trace the changelog file copied by packaging. It must be documented either
    as a distinct publication-facing source or as a canonical dual-purpose
    changelog, and it must contain the packaged stable version. Do not claim a
@@ -372,6 +380,7 @@ not passed; record the command, reason, and resulting risk.
 | APM change | `apm lock`; lock review; `apm install --frozen`; `apm audit --ci` | expected refs/hashes and no drift |
 | Package/release change | clean staging, archive-contract inspection, SHA-256, exact-artifact handoff check | one valid archive; digest matches |
 | Package binary identity | decode built and archived assembly/custom-attribute metadata against project/package contract | assembly name, `BepInPlugin` GUID/name/version, `BepInProcess`, required dependencies, manifest, and archive identity agree; one mutation fixture per rejection rule fails |
+| Package-facing documentation change | exact package-contract command plus extracted-archive README inspection | shared root/package facts agree; user wording remains natural; semantic identity/version guards and focused negative fixtures pass without requiring incidental prose |
 | Validator/policy fixture | invoke production command/path or the exact shared library it calls | fixture failure proves production enforcement; no duplicated test-only rule implementation |
 | Compatibility/release claim | clean-profile runtime test | record exact game build, BepInEx version, mod set, install path, scenario, result |
 | Structured validation logging requested | inspect representative startup, success, denial/failure, receiver/apply, restoration, and swallowed-exception records | role is observed or neutral rather than asserted; records prove the named outcome with boundary/source, result, and only necessary bounded before/after values; inner and outer swallowed exceptions are recorded; privacy exclusions hold |

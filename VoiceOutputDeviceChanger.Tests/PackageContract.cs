@@ -165,12 +165,20 @@ internal static class PackageContract
 
     private static void ValidateReadme(string readme)
     {
-        string[] requiredClaims = { "Voice Output Device Changer", "Lethal Company v81", "BepInEx 5" };
-        foreach (string claim in requiredClaims)
+        (string Value, string Description)[] requiredClaims =
         {
-            if (!readme.Contains(claim, StringComparison.Ordinal))
+            ("Voice Output Device Changer", "product identity"),
+            ("Lethal Company v81", "game version"),
+            ("6423525044216269478", "game manifest"),
+            ("BepInExPack", "package dependency identity"),
+            ("v5.4.2305", "package dependency version"),
+        };
+
+        foreach ((string value, string description) in requiredClaims)
+        {
+            if (!readme.Contains(value, StringComparison.Ordinal))
             {
-                throw new InvalidDataException($"Packaged README is missing required claim: {claim}");
+                throw new InvalidDataException($"Packaged README {description} is incorrect.");
             }
         }
     }
@@ -371,7 +379,51 @@ internal static class PackageContractTests
             AssertRejected("wrong-version", MutateAssembly(validSources, module => SetAttributeArgument(module, "BepInEx.BepInPlugin", 2, "9.9.9")), tempRoot, expectedVersion, "plugin version is incorrect");
             AssertRejected("missing-process", MutateAssembly(validSources, module => RemoveAttribute(module, "BepInEx.BepInProcess")), tempRoot, expectedVersion, "Expected exactly one BepInEx.BepInProcess attribute");
             AssertRejected("wrong-process", MutateAssembly(validSources, module => SetAttributeArgument(module, "BepInEx.BepInProcess", 0, "Wrong.exe")), tempRoot, expectedVersion, "process restriction is incorrect");
-            AssertRejected("readme-claim", Replace(validSources, "README.md", new("README.md", Encoding.UTF8.GetBytes("incomplete"))), tempRoot, expectedVersion, "README is missing required claim");
+            AssertRejected(
+                "readme-product",
+                Replace(
+                    validSources,
+                    "README.md",
+                    MutateReadme(validSources, "Voice Output Device Changer", "Wrong Product")),
+                tempRoot,
+                expectedVersion,
+                "README product identity is incorrect");
+            AssertRejected(
+                "readme-game-version",
+                Replace(
+                    validSources,
+                    "README.md",
+                    MutateReadme(validSources, "Lethal Company v81", "Lethal Company v80")),
+                tempRoot,
+                expectedVersion,
+                "README game version is incorrect");
+            AssertRejected(
+                "readme-game-manifest",
+                Replace(
+                    validSources,
+                    "README.md",
+                    MutateReadme(validSources, "6423525044216269478", "0000000000000000000")),
+                tempRoot,
+                expectedVersion,
+                "README game manifest is incorrect");
+            AssertRejected(
+                "readme-dependency-identity",
+                Replace(
+                    validSources,
+                    "README.md",
+                    MutateReadme(validSources, "BepInExPack", "WrongPack")),
+                tempRoot,
+                expectedVersion,
+                "README package dependency identity is incorrect");
+            AssertRejected(
+                "readme-dependency-version",
+                Replace(
+                    validSources,
+                    "README.md",
+                    MutateReadme(validSources, "v5.4.2305", "v5.4.2304")),
+                tempRoot,
+                expectedVersion,
+                "README package dependency version is incorrect");
             AssertRejected("changelog", Replace(validSources, "CHANGELOG.md", new("CHANGELOG.md", Encoding.UTF8.GetBytes("# Changelog"))), tempRoot, expectedVersion, "changelog is missing");
             if (string.Equals(expectedVersion, "0.0.0", StringComparison.Ordinal))
             {
@@ -459,6 +511,23 @@ internal static class PackageContractTests
             ?? throw new InvalidDataException("Source manifest must be a JSON object.");
         manifest["version_number"] = version;
         return new("manifest.json", Encoding.UTF8.GetBytes(manifest.ToJsonString()));
+    }
+
+    private static PackageFixtureBuilder.ArchiveSource MutateReadme(
+        IReadOnlyList<PackageFixtureBuilder.ArchiveSource> sources,
+        string oldValue,
+        string newValue)
+    {
+        PackageFixtureBuilder.ArchiveSource source =
+            sources.Single(candidate => candidate.Name == "README.md");
+        string readme = Encoding.UTF8.GetString(source.Content);
+        string mutated = readme.Replace(oldValue, newValue, StringComparison.Ordinal);
+        if (string.Equals(mutated, readme, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"README fixture source is missing: {oldValue}");
+        }
+
+        return new("README.md", Encoding.UTF8.GetBytes(mutated));
     }
 
     private static void AssertAccepted(
